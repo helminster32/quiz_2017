@@ -173,6 +173,52 @@ exports.play = function (req, res, next) {
     });
 };
 
+// GET /quizzes/:quizId/randomplay
+exports.randomplay = function (req, res, next) {
+	
+	if(!req.session.played){
+	    req.session.played=[];
+	    req.session.score=0;		
+		}
+	
+	var played = req.session.played;
+
+	models.Quiz.findAll()
+	.then(function(quizzes){
+		
+		console.log(played.length);
+		if(played.length >= quizzes.length){
+			res.render('quizzes/random_nomore', {
+                	score: req.session.score
+            });
+        }else{
+			
+		var j=Math.floor(quizzes.length*Math.random());
+		var quizzId=quizzes[j].id;
+		console.log(quizzId);
+		while (played.indexOf(quizzId) !== -1){
+			j=Math.floor(quizzes.length*Math.random());
+			quizzId=quizzes[j].id;}
+		}
+		return models.Quiz.findById(quizzId);
+	})
+	.then(function(quizz) {
+		console.log(quizz.id);
+		req.session.played.push(quizz.id);
+                res.render('quizzes/randomplay', {
+                	quiz: quizz,
+                	score: req.session.score,
+		});
+	})
+	.catch(function(error) {
+        req.flash('error', 'Error al cargar el Quiz: ' + error.message);
+        next(error);
+    });
+
+};
+
+
+
 
 // GET /quizzes/:quizId/check
 exports.check = function (req, res, next) {
@@ -186,4 +232,24 @@ exports.check = function (req, res, next) {
         result: result,
         answer: answer
     });
+};
+
+// GET /quizzes/randomcheck/:quizId
+exports.randomcheck = function (req, res, next) {
+
+    var answer = req.query.answer || "";
+
+    var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
+
+		if (result){		
+			req.session.score+=1;} else {
+	req.session.score=0;
+	req.session.played=[];
+	}
+		
+		res.render('quizzes/random_result', {
+        	score: req.session.score,
+        	result: result,
+        	answer: answer
+   		 });	
 };
