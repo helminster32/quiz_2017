@@ -46,6 +46,12 @@ router.get('/author', function (req, res, next) {
     res.render('author');
 });
 
+
+// Pagina de ayuda
+router.get('/help', function(req, res, next) {
+    res.render('help');
+});
+
 // Autoload de rutas que usen :quizId
 router.param('quizId', quizController.load);
 router.param('userId', userController.load);
@@ -134,5 +140,18 @@ router.delete('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)',
 router.get('/help', function(req, res, next) {
     res.render('help');
 });
+router.get('/quizzes',                     quizController.index);
+router.get('/quizzes/:quizId(\\d+)',       quizController.show);
+router.get('/quizzes/new',                 quizController.new);
+router.post('/quizzes',                    quizController.create);
+router.get('/quizzes/:quizId(\\d+)/edit',  quizController.edit);
+router.put('/quizzes/:quizId(\\d+)',       quizController.update);
+router.delete('/quizzes/:quizId(\\d+)',    quizController.destroy);
+
+router.get('/quizzes/:quizId(\\d+)/play',  quizController.play);
+router.get('/quizzes/:quizId(\\d+)/check', quizController.check);
+router.get('/quizzes/randomplay',	quizController.randomplay);
+router.get('/quizzes/randomcheck/:quizId(\\d+)',	quizController.randomcheck);
+>>>>>>> practica52
 
 module.exports = router;
