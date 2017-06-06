@@ -19,6 +19,13 @@ module.exports = {
                 isAdmin: true,
                 createdAt: new Date(), updatedAt: new Date()
             },
+	     {
+                username: 'torero',
+                password: encryptPassword('1205', 'cccc'),
+                salt: 'cccc',
+                isAdmin: true,
+                createdAt: new Date(), updatedAt: new Date()
+            },
             {
                 username: 'pepe',
                 password: encryptPassword('5678', 'bbbb'),
